@@ -1,50 +1,76 @@
+import IdGenerator from './IdGenerator'
+
 
 export default class Node{
 
-  static create(name, id, songsObject){
+  static createArtist(name, id, songsObject){
     return {
       name: name,
-      id: id,
+      intId: id,
+      id: null,
       attributes: songsObject,
       children: []
     }
   }
 
-  static findNode(rootObject, id){
+  // static createSong(name, id){
+  //   return {
+  //     id: id,
+  //     name: name
+  //   }
+  // }
+
+  static findNode = (rootObject, id) => {
     let result = null;
 
     if(rootObject){
-      if(rootObject.id == id){
+      if(rootObject.intId == id){
         result = rootObject
       } else {
-        nextThree.push(rootObject.recOne, rootObject.recTwo, rootObject.recThree)
-
-        children.forEach( (nodeObject) => {
+        // nextThree.push(rootObject.recOne, rootObject.recTwo, rootObject.recThree)
+        // debugger
+        rootObject.children.forEach( (nodeObject) => {
           if(!result){
-            result = this.findNode(val, id);
+            result = Node.findNode(nodeObject, id);
           }
         })
       }
     }
 
-    return result;
+    return result
   }
 
-  static insertRecsAt(nodeTree, nodeId, recsIdsArray, songsIdsArray){
+  static insertRecsAt = (nodeTree, nodeId, recsIdsArray, songsIdsArray) => {
     let node = Node.findNode(nodeTree, nodeId)
 
-    if(!node.recOne && !node.recTwo && !node.recThree){
+    if(node.children.length == 0){
+      let songsObject = {}
 
-      let [recIdOne, recIdTwo, recIdThree] = recsIdsArray
+      songsIdsArray.forEach( (id) => {
+        songsObject[`${id}`] = id
+      })
 
-      node.recOne = this.createNode(recIdOne, songsIdsArray)
-      node.recTwo = this.createNode(recIdTwo, songsIdsArray)
-      node.recThree = this.createNode(recIdThree, songsIdsArray)
+      recsIdsArray.forEach( (id)=>{
+        node.children.push(Node.createArtist("FakeArtist", id, songsObject))
+      })
 
-      return node
+      return nodeTree
 
     } else {
       console.log("Recs are occupied")
+    }
+  }
+
+  static genFakeNode = () => {
+    let id = IdGenerator.genId('artist')
+    console.log("Id generated:", id)
+
+    return Node.createArtist("Fake", id, IdGenerator.groupIds("song"))
+  }
+
+  static genBranches(node){
+    for(let i = 3; i > 0; i--){
+      node.children.push(this.genFakeNode())
     }
   }
 

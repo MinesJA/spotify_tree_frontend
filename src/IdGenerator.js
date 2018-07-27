@@ -1,15 +1,30 @@
-export genId = (type) => {
-  let id = Math.floor(Math.random() * 1000) + 1
-  type == "artist" ? this.state.artistIds.push(id) : null
-  return id
-}
+const IdGenerator = (function(){
+  let lastArtistId = 0;
+  let lastSongId = 0;
 
+  function genId(type){
+    let id;
 
-export groupIds = () => {
-  // returns array of 3 numbers
-  let recs = [];
-  for(let i = 3; i > 0; i--){
-    recs.push(this.genId())
+    type == "artist" ? id = ++lastArtistId : id = ++lastSongId
+    return id
   }
-  return recs
-}
+
+  function groupIds(type){
+    let recs = [];
+    for(let i = 3; i > 0; i--){
+      recs.push(genId(type))
+    }
+    return recs
+  }
+
+  return {
+    genId: function(type){
+      return genId(type)
+    },
+    groupIds: function(type){
+      return groupIds(type)
+    }
+  }
+})()
+
+export default IdGenerator
