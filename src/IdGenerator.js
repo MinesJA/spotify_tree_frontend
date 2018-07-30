@@ -5,7 +5,7 @@ const IdGenerator = (function(){
   function genId(type){
     let id;
 
-    type == "artist" ? id = ++lastArtistId : id = ++lastSongId
+    type === "artist" ? id = ++lastArtistId : id = ++lastSongId
     return id
   }
 

@@ -1,111 +1,56 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import Node from './Node'
-import ArtistGroup from './ArtistGroup'
-import { Button, Card, Image } from 'semantic-ui-react'
-import Tree from 'react-d3-tree'
-import IdGenerator from './IdGenerator'
+import SpotifyWebApi from 'spotify-web-api-js'
+import { Route } from 'react-router-dom'
+import TreeHome from './TreeHome'
+import Search from './Search'
+import ErrorPage from './ErrorPage'
+// Source code: https://github.com/JMPerez/spotify-web-api-js/blob/master/src/spotify-web-api.js
+const spotifyApi = new SpotifyWebApi();
 
-const myTreeData = [
-  {
-    name: 'Top Level',
-    attributes: {
-      keyA: 'val A',
-      keyB: 'val B',
-      keyC: 'val C',
-    },
-    children: [
-      {
-        name: 'Level 2: A',
-        attributes: {
-          keyA: 'val A',
-          keyB: 'val B',
-          keyC: 'val C',
-        },
-      },
-      {
-        name: 'Level 2: B',
-      },
-    ],
-  },
-];
+
+const shopify_api_key = process.env.REACT_APP_SPOTIFY_API_KEY
+const shopify_secrete_key = process.env.REACT_APP_SPOTIFY_SECRET
+
 
 class App extends Component {
-  state = {
-    tree: [
-      {
-        name: 'Top Level',
-        attributes: {
-          keyA: 'val A',
-          keyB: 'val B',
-          keyC: 'val C',
-        },
-        children: [
-          {
-            name: 'Level 2: A',
-            attributes: {
-              keyA: 'val A',
-              keyB: 'val B',
-              keyC: 'val C',
-            },
-          },
-          {
-            name: 'Level 2: B',
-          },
-        ],
-      },
-    ]
-  }
+  constructor(){
+    super();
+    const params = this.getHashParams();
 
-  componentDidMount(){
-  const dimensions = this.treeContainer.getBoundingClientRect();
-   this.setState({
-     translate: {
-       x: dimensions.width / 2,
-       y: dimensions.height / 2
+    console.log("params: ",params)
+
+    const token = params.access_token;
+    if(token){
+      spotifyApi.setAccessToken(token);
+    }
+    this.state = {
+      loggedIn: token ? true: false,
+      nowPlaying: { name: 'Not Checked', albumArt: '' }
      }
-   });
-
-
-    let root = Node.genFakeNode()
-    root.x = 50
-    root.y = 50
-    console.log("Root Node created:", root)
-
-    this.setState({
-      tree: [root]
-    })
   }
 
-  addFakeNode = (e) => {
+  getHashParams(){
+    var hashParams = {};
+    var e, r = /([^&;=]+)=?([^&;]*)/g,
+        q = window.location.hash.substring(1);
+    e = r.exec(q)
 
-    // debugger
-
-    console.log("Adding Fakes, root is:", this.state.tree[0])
-
-    let root = Node.insertRecsAt(this.state.tree[0], e.intId, IdGenerator.groupIds('artist'), IdGenerator.groupIds('song') )
-
-    console.log("Root after adding: ", root)
-
-    this.setState({
-      tree: [root]
-    }, ()=>{"New state:", console.log(this.state.tree)})
+    while(e){
+      hashParams[e[1]] = decodeURIComponent(e[2]);
+      e = r.exec(q);
+    }
+    return hashParams;
   }
-
-
-
-
-
 
   render() {
+    // let keys_exist = Object.keys(params).length > 1 || null
     return (
       <div className="App">
-        <Tree id="tree"
-          onClick={this.addFakeNode}
-          data={this.state.tree}
-          orientation="vertical"
-        />
+        <a href='http://localhost:8888'>Login to Spotify </a>
+        <Route path="/search" component={()=>(<Search spotifyApi={spotifyApi} />)}/>
+        <Route path="/tree" component={TreeHome}/>
+        <Route path="/error" component={ErrorPage}/>
       </div>
     );
   }
