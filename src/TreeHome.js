@@ -19,9 +19,6 @@ class TreeHome extends PureComponent {
      });
   }
 
-
-
-
   addFakeNode = (e) => {
     let root = Node.insertRecsAt(this.state.tree[0], e.intId, IdGenerator.groupIds('artist'), IdGenerator.groupIds('song') )
 
@@ -40,7 +37,7 @@ class TreeHome extends PureComponent {
     return (
       <div style={containerStyles} ref={tc => (this.treeContainer = tc)}>
         <Tree id="tree"
-          onClick={this.addFakeNode}
+          onClick={this.props.clickedNode}
           translate={this.state.translate}
           data={this.props.tree}
           orientation="vertical"

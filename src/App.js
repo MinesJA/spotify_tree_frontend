@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import Node from './Node'
 import SpotifyWebApi from 'spotify-web-api-js'
 import TreeHome from './TreeHome'
 import Search from './Search'
@@ -14,13 +15,11 @@ class App extends Component {
   constructor(){
     super();
     const params = this.getHashParams();
-
-    console.log("params: ",params)
-
     const token = params.access_token;
     if(token){
       spotifyApi.setAccessToken(token);
     }
+
     this.state = {
       loggedIn: token ? true: false,
       nowPlaying: { name: 'Not Checked', albumArt: '' },
@@ -64,14 +63,8 @@ class App extends Component {
     return hashParams;
   }
 
-  // handleSubmit = (searchTerm) => {
-  //
-  // }
-
-
-  setArtistObject = (searchTerm) => {
+  setInitialArtist = (searchTerm) => {
     // sets state with an object with spotify artist info, top 3 tracks, and top 3 recommended artists
-
     let rootArtist = {};
 
     spotifyApi.searchArtists(searchTerm)
@@ -89,48 +82,52 @@ class App extends Component {
 
                 this.setState({
                   rootArtist: rootArtist
-                }, ()=>{console.log("Setting App State: ", this.state.rootArtist)})
+                }, ()=>{
+                  this.buildRoot();
+                  console.log("Setting App State: ", this.state.rootArtist)
+                })
               })
           })
       })
   }
 
-  buildTree = () => {
+
+  buildRoot = () => {
+    let { artist, topTracks, relatedArtists } = this.state.rootArtist;
+    let
 
 
+    spotifyApi.getArtistTopTracks()
 
+
+    let node = Node.returnNode(artist, topTracks)
+    console.log(node)
+    console.log("relatedArtists:", relatedArtists)
+
+    Node.addChildren(node, relatedArtists)
 
     this.setState({
-
-      
+      tree: [node]
     })
   }
 
-
-
+  // buildTree = (insertAt) => {
   //
-  //   console.log("compDidMount:", this.props)
-  //
-  //   let { artist, topTracks, relatedArtists } = this.props.rootArtist;
-  //
-  //   let artistName = artist.name;
-  //   let artistId = artist.id;
-  //   let songsObject = {
-  //     'SongOne': `${topTracks[0].name}`,
-  //     'SongTwo': `${topTracks[1].name}`,
-  //     'SongThree': `${topTracks[2].name}`
-  //   };
-  //
-  //  let root = Node.createArtist()
   // }
+
+  handleClick = (e) => {
+    debugger
+
+    let artistId = e.intId
+  }
 
 
   render() {
     console.log(this.state.rootArtist)
     return (
       <div className="App">
-        { this.state.loggedIn ? <Search handleSubmit={(searchTerm)=>{this.setArtistObject(searchTerm)}} /> : <a href='http://localhost:8888'>Login to Spotify </a> }
-        { Object.keys(this.state.rootArtist).length > 0 ? <TreeHome tree={this.state.tree} /> : null }
+        { this.state.loggedIn ? <Search handleSubmit={(searchTerm)=>{this.setInitialArtist(searchTerm)}} /> : <a href='http://localhost:8888'>Login to Spotify </a> }
+        { Object.keys(this.state.rootArtist).length > 0 ? <TreeHome tree={this.state.tree} clickedNode={this.handleClick} /> : null }
       </div>
     );
   }

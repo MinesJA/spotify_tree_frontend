@@ -3,14 +3,37 @@ import IdGenerator from './IdGenerator'
 
 export default class Node{
 
+
+
   static createArtist(name, id, songsObject){
     return {
-      name: id,
+      name: name,
       intId: id,
       id: null,
       attributes: songsObject,
       children: []
     }
+  }
+
+  static returnNodeWith(artistObject, topTracks){
+    let { name, id } = artistObject
+    let [songOne, songTwo, songThree ] = topTracks
+    let songsObject = {
+        'SongOne': `${songOne}`,
+        'SongTwo': `${songTwo}`,
+        'SongThree': `${songThree}`
+      }
+
+    return Node.createArtist(name, id, songsObject)
+  }
+
+  static addChildren(node, relatedArtists){
+
+    relatedArtists.forEach( (artist)=>{
+      node.children.push(Node.createArtist(artist.name, artist.id, artist.songsObject))
+    })
+
+    return node
   }
 
   static findNode = (rootObject, id) => {
