@@ -4,8 +4,7 @@ import { Input, Button } from 'semantic-ui-react'
 
 class Search extends Component {
   state = {
-      searchTerm: "",
-      spotifyApi: this.props.spotifyApi
+      searchTerm: ""
     }
 
 
@@ -16,11 +15,7 @@ class Search extends Component {
     }, ()=>{console.log(this.state.searchTerm)} )
   }
 
-  handleSubmit = () => {
-    this.state.spotifyApi.search(this.state.searchTerm, ['artist'])
-      .then(resp=>resp.json())
-      .then(response=>{console.log(response)})
-  }
+
 
 
 
@@ -33,7 +28,7 @@ class Search extends Component {
       <div style={style}>
         <Input type='text' placeholder='Search Artists...' action onChange={this.handleChange}>
           <input />
-          <Button type='submit' onClick={this.handleSubmit}>Search</Button>
+          <Button type='submit' onClick={()=>{this.props.handleSubmit(this.state.searchTerm)}}>Search</Button>
         </Input>
       </div>
     )

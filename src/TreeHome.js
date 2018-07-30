@@ -49,6 +49,11 @@ class TreeHome extends PureComponent {
 
 
     let root = Node.genFakeNode()
+    let artistName = this.props.rootArtist.name
+    let artistImage = this.props.rootArtist.images[1].url
+    let artistId = this.props.rootArtist.id
+
+    // let root = Node.createArtist(artistName, artistId, )
     root.x = 50
 
     console.log("Root Node created:", root)
@@ -67,7 +72,8 @@ class TreeHome extends PureComponent {
   }
 
   render() {
-    let containerStyles = {
+    
+    const containerStyles = {
       width: '100%',
       height: '100vh',
       borderStyle: "solid"

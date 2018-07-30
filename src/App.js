@@ -26,7 +26,8 @@ class App extends Component {
     }
     this.state = {
       loggedIn: token ? true: false,
-      nowPlaying: { name: 'Not Checked', albumArt: '' }
+      nowPlaying: { name: 'Not Checked', albumArt: '' },
+      rootArtist: {}
      }
   }
 
@@ -43,14 +44,42 @@ class App extends Component {
     return hashParams;
   }
 
+  handleSubmit = (searchTerm) => {
+    let artist;
+    let market;
+    let rootArtist = {};
+
+
+    spotifyApi.searchArtists(searchTerm)
+      .then(resp=>{
+
+        artist = resp.artists.items[0]
+        market = resp.artists.href.split("&").find( (string) => (string.includes("market"))).split("=")[1];
+        rootArtist['artist'] = artist
+        rootArtist['market'] = market
+
+        spotifyApi.getArtistTopTracks(artist.id, market)
+          .then(res=>{
+
+            // working on this now
+
+          })
+
+        // debugger
+
+        this.setState({
+          rootArtist: resp.artists.items[0]
+        }, ()=>{console.log(this.state.rootArtist)})
+      })
+  }
+
+
   render() {
-    // let keys_exist = Object.keys(params).length > 1 || null
+    console.log(this.state.rootArtist)
     return (
       <div className="App">
-        <a href='http://localhost:8888'>Login to Spotify </a>
-        <Route path="/search" component={()=>(<Search spotifyApi={spotifyApi} />)}/>
-        <Route path="/tree" component={TreeHome}/>
-        <Route path="/error" component={ErrorPage}/>
+        { this.state.loggedIn ? <Search handleSubmit={this.handleSubmit} /> : <a href='http://localhost:8888'>Login to Spotify </a> }
+        { Object.keys(this.state.rootArtist).length > 0 ? <TreeHome rootArtist={this.state.rootArtist} /> : null }
       </div>
     );
   }
