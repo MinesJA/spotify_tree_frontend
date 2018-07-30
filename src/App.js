@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
 import './App.css';
 import SpotifyWebApi from 'spotify-web-api-js'
-import { Route } from 'react-router-dom'
 import TreeHome from './TreeHome'
 import Search from './Search'
-import ErrorPage from './ErrorPage'
 // Source code: https://github.com/JMPerez/spotify-web-api-js/blob/master/src/spotify-web-api.js
 const spotifyApi = new SpotifyWebApi();
 
-
-const shopify_api_key = process.env.REACT_APP_SPOTIFY_API_KEY
-const shopify_secrete_key = process.env.REACT_APP_SPOTIFY_SECRET
+// const shopify_api_key = process.env.REACT_APP_SPOTIFY_API_KEY
+// const shopify_secrete_key = process.env.REACT_APP_SPOTIFY_SECRET
 
 
 class App extends Component {
@@ -27,7 +24,30 @@ class App extends Component {
     this.state = {
       loggedIn: token ? true: false,
       nowPlaying: { name: 'Not Checked', albumArt: '' },
-      rootArtist: {}
+      rootArtist: {},
+      tree: [
+        {
+          name: 'Top Level',
+          attributes: {
+            keyA: 'val A',
+            keyB: 'val B',
+            keyC: 'val C',
+          },
+          children: [
+            {
+              name: 'Level 2: A',
+              attributes: {
+                keyA: 'val A',
+                keyB: 'val B',
+                keyC: 'val C',
+              },
+            },
+            {
+              name: 'Level 2: B',
+            },
+          ],
+        },
+      ]
      }
   }
 
@@ -44,42 +64,73 @@ class App extends Component {
     return hashParams;
   }
 
-  handleSubmit = (searchTerm) => {
-    let artist;
-    let market;
+  // handleSubmit = (searchTerm) => {
+  //
+  // }
+
+
+  setArtistObject = (searchTerm) => {
+    // sets state with an object with spotify artist info, top 3 tracks, and top 3 recommended artists
+
     let rootArtist = {};
 
-
     spotifyApi.searchArtists(searchTerm)
-      .then(resp=>{
+      .then(resp => {
+        rootArtist['artist'] = resp.artists.items[0];
+        rootArtist['market'] = resp.artists.href.split("&").find( (string) => (string.includes("market"))).split("=")[1];
 
-        artist = resp.artists.items[0]
-        market = resp.artists.href.split("&").find( (string) => (string.includes("market"))).split("=")[1];
-        rootArtist['artist'] = artist
-        rootArtist['market'] = market
+        spotifyApi.getArtistTopTracks(rootArtist.artist.id, rootArtist.market)
+          .then(resp => {
+            rootArtist['topTracks'] = resp.tracks.splice(0,3);
 
-        spotifyApi.getArtistTopTracks(artist.id, market)
-          .then(res=>{
+            spotifyApi.getArtistRelatedArtists(rootArtist.artist.id)
+              .then(resp => {
+                rootArtist['relatedArtists'] = resp.artists.splice(0,3);
 
-            // working on this now
-
+                this.setState({
+                  rootArtist: rootArtist
+                }, ()=>{console.log("Setting App State: ", this.state.rootArtist)})
+              })
           })
-
-        // debugger
-
-        this.setState({
-          rootArtist: resp.artists.items[0]
-        }, ()=>{console.log(this.state.rootArtist)})
       })
   }
+
+  buildTree = () => {
+
+
+
+
+    this.setState({
+
+      
+    })
+  }
+
+
+
+  //
+  //   console.log("compDidMount:", this.props)
+  //
+  //   let { artist, topTracks, relatedArtists } = this.props.rootArtist;
+  //
+  //   let artistName = artist.name;
+  //   let artistId = artist.id;
+  //   let songsObject = {
+  //     'SongOne': `${topTracks[0].name}`,
+  //     'SongTwo': `${topTracks[1].name}`,
+  //     'SongThree': `${topTracks[2].name}`
+  //   };
+  //
+  //  let root = Node.createArtist()
+  // }
 
 
   render() {
     console.log(this.state.rootArtist)
     return (
       <div className="App">
-        { this.state.loggedIn ? <Search handleSubmit={this.handleSubmit} /> : <a href='http://localhost:8888'>Login to Spotify </a> }
-        { Object.keys(this.state.rootArtist).length > 0 ? <TreeHome rootArtist={this.state.rootArtist} /> : null }
+        { this.state.loggedIn ? <Search handleSubmit={(searchTerm)=>{this.setArtistObject(searchTerm)}} /> : <a href='http://localhost:8888'>Login to Spotify </a> }
+        { Object.keys(this.state.rootArtist).length > 0 ? <TreeHome tree={this.state.tree} /> : null }
       </div>
     );
   }

@@ -9,10 +9,9 @@ class Search extends Component {
 
 
   handleChange = (e, {value}) => {
-    console.log(this.props.spotifyApi)
     this.setState({
       searchTerm: value
-    }, ()=>{console.log(this.state.searchTerm)} )
+    })
   }
 
 
