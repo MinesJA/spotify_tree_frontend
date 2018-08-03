@@ -1,23 +1,20 @@
 import React, { Component } from 'react';
-import { Card } from 'semantic-ui-react'
+import { Segment, Image, Header } from 'semantic-ui-react'
 
 class ArtistCard extends Component {
 
+
+
   render() {
+    let { imageUrl, name, songs, id, url, genres } = this.props.artist
+    let style = {width: "50%", margin: "0 auto"}
+    let header = {margin: "0px", fontFamily: "HelveticaNeue-Light", fontWeight: 300}
     return (
-      <Card floated={this.props.floated}>
-        <Card.Content>
-          <Card.Header>Artist Name</Card.Header>
-          <Card.Meta>Artist description</Card.Meta>
-          <Card.Description>
-            <ul>
-              <li>Song 1</li>
-              <li>Song 2</li>
-              <li>Song 3</li>
-            </ul>
-          </Card.Description>
-        </Card.Content>
-      </Card>
+      <Segment textAlign='center' circular>
+        <iframe src={"https://embed.spotify.com/?uri=" + songs[0]} width="80" height="80" frameborder="0" allowtransparency="true"></iframe>
+        <Header style={header} size='medium'>{name}</Header>
+      </Segment>
+
     );
   }
 }

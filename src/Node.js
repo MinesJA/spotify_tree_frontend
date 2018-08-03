@@ -3,28 +3,27 @@ import IdGenerator from './IdGenerator'
 
 export default class Node{
 
+  static returnNode(artistObject){
+    // incoming artist object is {artist: {}, topTracks: {}}
 
-
-  static createArtist(name, id, songsObject){
-    return {
-      name: name,
-      intId: id,
+    let artistNode = {
+      name: "",
+      intId: "",
       id: null,
-      attributes: songsObject,
+      attributes: {},
       children: []
     }
-  }
 
-  static returnNodeWith(artistObject, topTracks){
-    let { name, id } = artistObject
-    let [songOne, songTwo, songThree ] = topTracks
-    let songsObject = {
-        'SongOne': `${songOne}`,
-        'SongTwo': `${songTwo}`,
-        'SongThree': `${songThree}`
-      }
+    artistNode.name = artistObject.artist.name
+    artistNode.intId = artistObject.artist.id
 
-    return Node.createArtist(name, id, songsObject)
+    let [songOne, songTwo, songThree] = artistObject.topTracks
+
+    artistNode.attributes['songOne'] = songOne.name
+    artistNode.attributes['songTwo'] = songTwo.name
+    artistNode.attributes['songThree'] = songThree.name
+
+    return artistNode
   }
 
   static addChildren(node, relatedArtists){
@@ -54,26 +53,14 @@ export default class Node{
     return result
   }
 
-  static insertRecsAt = (nodeTree, nodeId, recsIdsArray, songsIdsArray) => {
+  static insertRecsAt = (nodeTree, nodeId, children) => {
     let node = Node.findNode(nodeTree, nodeId)
 
-    if(node.children.length === 0){
-      let songsObject = {}
+    node.children = children
 
-      songsIdsArray.forEach( (id) => {
-        songsObject[`${id}`] = id
-      })
-
-      recsIdsArray.forEach( (id)=>{
-        node.children.push(Node.createArtist("FakeArtist", id, songsObject))
-      })
-
-      return nodeTree
-
-    } else {
-      console.log("Recs are occupied")
-    }
+    return nodeTree
   }
+
 
   static genFakeNode = () => (
     Node.createArtist("Fake", IdGenerator.genId('artist'), IdGenerator.groupIds("song"))

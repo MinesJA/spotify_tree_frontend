@@ -8,4 +8,6 @@ export default class Adapter{
       .then( resp => resp.json() )
       .then( data => console.log("Spotify Auth: ", data))
   }
+
+  
 }

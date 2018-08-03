@@ -3,6 +3,7 @@ import './App.css';
 import Node from './Node'
 import SpotifyWebApi from 'spotify-web-api-js'
 import TreeHome from './TreeHome'
+import ArtistCard from './ArtistCard'
 import Search from './Search'
 // Source code: https://github.com/JMPerez/spotify-web-api-js/blob/master/src/spotify-web-api.js
 const spotifyApi = new SpotifyWebApi();
@@ -23,7 +24,7 @@ class App extends Component {
     this.state = {
       loggedIn: token ? true: false,
       nowPlaying: { name: 'Not Checked', albumArt: '' },
-      rootArtist: {},
+      artistNode: {},
       tree: [
         {
           name: 'Top Level',
@@ -50,6 +51,7 @@ class App extends Component {
      }
   }
 
+
   getHashParams(){
     var hashParams = {};
     var e, r = /([^&;=]+)=?([^&;]*)/g,
@@ -63,71 +65,168 @@ class App extends Component {
     return hashParams;
   }
 
-  setInitialArtist = (searchTerm) => {
-    // sets state with an object with spotify artist info, top 3 tracks, and top 3 recommended artists
-    let rootArtist = {};
 
-    spotifyApi.searchArtists(searchTerm)
+  findArtistByTerm = (searchTerm) => {
+    let artistObject = {};
+
+    return spotifyApi.searchArtists(searchTerm)
       .then(resp => {
-        rootArtist['artist'] = resp.artists.items[0];
-        rootArtist['market'] = resp.artists.href.split("&").find( (string) => (string.includes("market"))).split("=")[1];
+        artistObject['artist'] = resp.artists.items[0];
+        artistObject['market'] = resp.artists.href.split("&").find( (string) => (string.includes("market"))).split("=")[1];
 
-        spotifyApi.getArtistTopTracks(rootArtist.artist.id, rootArtist.market)
-          .then(resp => {
-            rootArtist['topTracks'] = resp.tracks.splice(0,3);
+        return artistObject
+      })
+  }
 
-            spotifyApi.getArtistRelatedArtists(rootArtist.artist.id)
-              .then(resp => {
-                rootArtist['relatedArtists'] = resp.artists.splice(0,3);
 
-                this.setState({
-                  rootArtist: rootArtist
-                }, ()=>{
-                  this.buildRoot();
-                  console.log("Setting App State: ", this.state.rootArtist)
-                })
+  instantiateRoot = (searchTerm) => {
+    let artistNode;
+
+    this.findArtistByTerm(searchTerm)
+      .then( artistObject => {
+
+        this.buildArtistNode(artistObject)
+        .then( node => {
+          artistNode = node
+
+          this.getRelatedArtistNodes(node.intId)
+            .then( artistsArray => {
+              artistNode.children = artistsArray
+
+              this.setState({
+                tree: [artistNode],
+                artistNode
+              }, ()=>{console.log("Set state with new tree:", this.state.tree)} )
+            })
+        })
+      })
+    }
+
+
+  async relatedArtistsToNodes(relatedArtists){
+
+    let promise = new Promise((resolve, reject) => {
+      let artistsArray = [];
+
+      relatedArtists.forEach(artist => {
+
+        this.findArtistByTerm(artist.name)
+          .then(artistObject => {
+
+            this.buildArtistNode(artistObject)
+              .then( node => {
+
+                artistsArray.push(node)
               })
+          })
+      })
+      setTimeout(()=>resolve(artistsArray), 1000)
+    })
+
+    let result = await promise;
+    return result
+
+    // let artistsArray = [];
+
+    // relatedArtists.forEach(async artist => {
+    //   // let node = await this.findArtistByTerm(artist.name)
+    //   //   .then(artistObject => {
+    //   //     return await this.buildArtistNode(artistObject)
+    //   //   })
+    //   let artistObject = await this.findArtistByTerm(artist.name)
+    //   console.log("ArtistObject:", artistObject)
+    //   let node = await this.buildArtistNode(artistObject)
+    //   console.log("Node:", node)
+    //   artistsArray.push(node)
+    // })
+
+    // return await relatedArtists.map(async artist => {
+    //   let artistObject = await this.findArtistByTerm(artist.name)
+    //   console.log("ArtistObject:", artistObject)
+    //   let node = await this.buildArtistNode(artistObject)
+    //   console.log("node:", node)
+    //   return node
+    // })
+    //
+    // console.log("artistsArray:", artistsArray)
+    //
+    // return artistsArray
+    //
+    // let promises = relatedArtists.map(artist => {
+    //   return async () => {
+    //     let artistObject = await this.findArtistByTerm(artist.name)
+    //     console.log("ArtistObject:", artistObject)
+    //     let node = await this.buildArtistNode(artistObject)
+    //     console.log("node:", node)
+    //     return node
+    //   }
+    // })
+    // let result = await Promise.all(promises)
+    //
+    // console.log(result);
+    // return result;
+  }
+
+
+  getRelatedArtistNodes = (artistId) => {
+
+    return spotifyApi.getArtistRelatedArtists(artistId)
+      .then(resp => {
+        let relatedArtists = resp.artists.splice(0,3);
+        console.log(relatedArtists)
+
+        return this.relatedArtistsToNodes(relatedArtists)
+          .then(artistsArray => {
+              return artistsArray
           })
       })
   }
 
 
-  buildRoot = () => {
-    let { artist, topTracks, relatedArtists } = this.state.rootArtist;
-    let
-
-
-    spotifyApi.getArtistTopTracks()
-
-
-    let node = Node.returnNode(artist, topTracks)
-    console.log(node)
-    console.log("relatedArtists:", relatedArtists)
-
-    Node.addChildren(node, relatedArtists)
-
-    this.setState({
-      tree: [node]
-    })
+  buildArtistNode = (artistObject) => {
+    return spotifyApi.getArtistTopTracks(artistObject.artist.id, artistObject.market)
+      .then(resp => {
+        artistObject['topTracks'] = resp.tracks.splice(0,3);
+        console.log(resp)
+        return Node.returnNode(artistObject)
+      })
   }
 
-  // buildTree = (insertAt) => {
-  //
-  // }
 
   handleClick = (e) => {
-    debugger
+    let node = Node.findNode(this.state.tree[0], e.intId)
 
-    let artistId = e.intId
-  }
+    if(node.children.length > 0){
+      console.log("Already children")
+
+    } else {
+      this.getRelatedArtistNodes(e.intId)
+        .then( artistsArray => {
+          let tree = Node.insertRecsAt(this.state.tree[0], e.intId, artistsArray)
+
+          this.setState({
+            tree: [tree]
+          }, ()=>{console.log("Set state with new tree:", this.state.tree)} )
+        })
+      }
+
+    }
 
 
   render() {
-    console.log(this.state.rootArtist)
+    let artist = {
+      url: "https://open.spotify.com/artist/7Ey4PD4MYsKc5I2dolUwbH",
+      genres: ["album rock", "classic rock", "hard rock", "rock"],
+      id: "7Ey4PD4MYsKc5I2dolUwbH",
+      imageUrl: "https://i.scdn.co/image/81442527ebb3ff17f86fde87f75f96fd80a5d97c",
+      name: "Aerosmith",
+      songs: ["spotify:track:07rjmFuB0I2O1UuIPnu6Qj","spotify:track:2ZkbS5VzMPOH8ZKvGNqnUj","spotify:track:1Lc9JahgQBinguxIJREPfd"]
+    }
     return (
       <div className="App">
-        { this.state.loggedIn ? <Search handleSubmit={(searchTerm)=>{this.setInitialArtist(searchTerm)}} /> : <a href='http://localhost:8888'>Login to Spotify </a> }
-        { Object.keys(this.state.rootArtist).length > 0 ? <TreeHome tree={this.state.tree} clickedNode={this.handleClick} /> : null }
+        <ArtistCard artist={artist}/>
+        { this.state.loggedIn ? <Search handleSubmit={(searchTerm)=>{this.instantiateRoot(searchTerm)}} /> : <a href='http://localhost:8888'>Login to Spotify </a> }
+        { Object.keys(this.state.artistNode).length > 0 ? <TreeHome tree={this.state.tree} clickedNode={this.handleClick} /> : null }
       </div>
     );
   }
