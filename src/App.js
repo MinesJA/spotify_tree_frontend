@@ -218,7 +218,7 @@ class App extends Component {
     return (
       <div className="App">
         { this.state.loggedIn ? <Search handleSubmit={(searchTerm)=>{this.instantiateRoot(searchTerm)}} /> : <a href='http://localhost:8888'>Login to Spotify </a> }
-        { Object.keys(this.state.artistNode).length > 0 ? <TreeHome tree={this.state.tree} clickedNode={this.handleClick} /> : null }
+        { Object.keys(this.state.artistNode).length > 0 ? <TreeHome tree={this.state.tree} clickedNode={this.handleClick} style={{margin: "0 auto"}}/> : null }
       </div>
     );
   }

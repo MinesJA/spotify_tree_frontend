@@ -33,8 +33,7 @@ class TreeHome extends PureComponent {
 
     const containerStyles = {
       width: '100%',
-      height: '100vh',
-      borderStyle: "solid"
+      height: '100vh'
     }
     return (
       <div style={containerStyles} ref={tc => (this.treeContainer = tc)}>
@@ -45,7 +44,7 @@ class TreeHome extends PureComponent {
           allowForeignObjects nodeLabelComponent={
             {render: <ArtistCard />,
              foreignObjectWrapper:
-              {x: -20,
+              {x: -50,
                y: -20}
             }
           }
