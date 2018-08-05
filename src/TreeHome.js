@@ -4,6 +4,7 @@ import Node from './Node'
 import Tree from 'react-d3-tree'
 import IdGenerator from './IdGenerator'
 import Adapter from './Adapter'
+import ArtistCard from './ArtistCard'
 
 
 class TreeHome extends PureComponent {
@@ -41,6 +42,13 @@ class TreeHome extends PureComponent {
           onClick={this.props.clickedNode}
           translate={this.state.translate}
           data={this.props.tree}
+          allowForeignObjects nodeLabelComponent={
+            {render: <ArtistCard />,
+             foreignObjectWrapper:
+              {x: -20,
+               y: -20}
+            }
+          }
           orientation="vertical"
         />
       </div>

@@ -5,6 +5,7 @@ import SpotifyWebApi from 'spotify-web-api-js'
 import TreeHome from './TreeHome'
 import ArtistCard from './ArtistCard'
 import Search from './Search'
+
 // Source code: https://github.com/JMPerez/spotify-web-api-js/blob/master/src/spotify-web-api.js
 const spotifyApi = new SpotifyWebApi();
 
@@ -96,7 +97,7 @@ class App extends Component {
               this.setState({
                 tree: [artistNode],
                 artistNode
-              }, ()=>{console.log("Set state with new tree:", this.state.tree)} )
+              })
             })
         })
       })
@@ -108,7 +109,7 @@ class App extends Component {
     let promise = new Promise((resolve, reject) => {
       let artistsArray = [];
 
-      relatedArtists.forEach(artist => {
+      relatedArtists.forEach(async (artist) => {
 
         this.findArtistByTerm(artist.name)
           .then(artistObject => {
@@ -119,6 +120,11 @@ class App extends Component {
                 artistsArray.push(node)
               })
           })
+
+        // let artistObject = await this.findArtistByTerm(artist.name)
+        // let node = await this.buildArtistNode(artistObject)
+
+        // artistsArray.push(node)
       })
       setTimeout(()=>resolve(artistsArray), 1000)
     })
@@ -173,7 +179,6 @@ class App extends Component {
     return spotifyApi.getArtistRelatedArtists(artistId)
       .then(resp => {
         let relatedArtists = resp.artists.splice(0,3);
-        console.log(relatedArtists)
 
         return this.relatedArtistsToNodes(relatedArtists)
           .then(artistsArray => {
@@ -187,7 +192,6 @@ class App extends Component {
     return spotifyApi.getArtistTopTracks(artistObject.artist.id, artistObject.market)
       .then(resp => {
         artistObject['topTracks'] = resp.tracks.splice(0,3);
-        console.log(resp)
         return Node.returnNode(artistObject)
       })
   }
@@ -204,27 +208,15 @@ class App extends Component {
         .then( artistsArray => {
           let tree = Node.insertRecsAt(this.state.tree[0], e.intId, artistsArray)
 
-          this.setState({
-            tree: [tree]
-          }, ()=>{console.log("Set state with new tree:", this.state.tree)} )
+          this.setState({tree: [tree]})
         })
-      }
-
     }
+  }
 
 
   render() {
-    let artist = {
-      url: "https://open.spotify.com/artist/7Ey4PD4MYsKc5I2dolUwbH",
-      genres: ["album rock", "classic rock", "hard rock", "rock"],
-      id: "7Ey4PD4MYsKc5I2dolUwbH",
-      imageUrl: "https://i.scdn.co/image/81442527ebb3ff17f86fde87f75f96fd80a5d97c",
-      name: "Aerosmith",
-      songs: ["spotify:track:07rjmFuB0I2O1UuIPnu6Qj","spotify:track:2ZkbS5VzMPOH8ZKvGNqnUj","spotify:track:1Lc9JahgQBinguxIJREPfd"]
-    }
     return (
       <div className="App">
-        <ArtistCard artist={artist}/>
         { this.state.loggedIn ? <Search handleSubmit={(searchTerm)=>{this.instantiateRoot(searchTerm)}} /> : <a href='http://localhost:8888'>Login to Spotify </a> }
         { Object.keys(this.state.artistNode).length > 0 ? <TreeHome tree={this.state.tree} clickedNode={this.handleClick} /> : null }
       </div>

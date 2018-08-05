@@ -19,9 +19,9 @@ export default class Node{
 
     let [songOne, songTwo, songThree] = artistObject.topTracks
 
-    artistNode.attributes['songOne'] = songOne.name
-    artistNode.attributes['songTwo'] = songTwo.name
-    artistNode.attributes['songThree'] = songThree.name
+    // artistNode.attributes['songOne'] = songOne.uri
+    artistNode.song = songOne.uri
+    artistNode.image = artistObject.artist.images[2]
 
     return artistNode
   }
