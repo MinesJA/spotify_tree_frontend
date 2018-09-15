@@ -19,34 +19,10 @@ const spotifyApi = new SpotifyWebApi();
 
 
 class App extends Component {
-  constructor(){
-    super();
-    const params = this.getHashParams();
-    const token = params.access_token;
-    if(token){
-      spotifyApi.setAccessToken(token);
-    }
-
-    this.state = {
-      loggedIn: token ? true : false,
-      artistNode: {},
-      tree: []
-     }
+  this.state = {
+    artistNode: {},
+    tree: []
   }
-
-  getHashParams(){
-    var hashParams = {};
-    var e, r = /([^&;=]+)=?([^&;]*)/g,
-        q = window.location.hash.substring(1);
-    e = r.exec(q)
-
-    while(e){
-      hashParams[e[1]] = decodeURIComponent(e[2]);
-      e = r.exec(q);
-    }
-    return hashParams;
-  }
-
 
   findArtistByTerm = (searchTerm) => {
     let artistObject = {};
@@ -97,7 +73,6 @@ class App extends Component {
 
             this.buildArtistNode(artistObject)
               .then( node => {
-
                 artistsArray.push(node)
               })
           })
@@ -138,10 +113,7 @@ class App extends Component {
   handleClick = (e) => {
     let node = Node.findNode(this.state.tree[0], e.intId)
 
-    if(node.children.length > 0){
-      console.log("Already children")
-
-    } else {
+    if(node.children.length == 0){
       this.getRelatedArtistNodes(e.intId)
         .then( artistsArray => {
           let tree = Node.insertRecsAt(this.state.tree[0], e.intId, artistsArray)
@@ -155,12 +127,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        {
-          this.state.loggedIn ?
-          <Main />
-          :
-          <LoginPage />
-        }
+        <Search handleSubmit={(searchTerm)=>{this.instantiateRoot(searchTerm)}} />
         {
           Object.keys(this.state.artistNode).length > 0 ?
           <TreeHome tree={this.state.tree} clickedNode={this.handleClick} style={{margin: "0 auto"}}/>
