@@ -112,14 +112,26 @@ class App extends Component {
     }
   }
 
+//
+
 
   render() {
+    const mainStyle = {
+      width: "75%",
+      height: "1000px",
+      display: "flex",
+      justifyContent: "flex-start",
+      alignItems: "center",
+      flexDirection: "column",
+      border: "2px solid black"
+    }
+
     return (
-      <div className="App">
+      <div style={mainStyle}>
         <Search handleSubmit={(searchTerm)=>{this.instantiateRoot(searchTerm)}} />
         {
           Object.keys(this.state.artistNode).length > 0 ?
-          <TreeHome tree={this.state.tree} clickedNode={this.handleClick} style={{margin: "0 auto"}}/>
+          <TreeHome tree={this.state.tree} clickedNode={this.handleClick} />
           :
           null
         }

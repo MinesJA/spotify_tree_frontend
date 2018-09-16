@@ -14,12 +14,12 @@ class Search extends Component {
   }
 
   render(){
-    const style = {width: "50%", margin: "0 auto"}
+
     return(
-      <div style={style}>
+      <div style={{margin: "20px"}}>
         <Input type='text' placeholder='Search Artists...' action onChange={this.handleChange}>
           <input />
-          <Button type='submit' onClick={()=>{this.props.handleSubmit(this.state.searchTerm)}}>Search</Button>
+          <Button type='submit' onClick={()=>{this.props.handleSubmit(this.state.searchTerm)}}>Search for an Artist</Button>
         </Input>
       </div>
     )

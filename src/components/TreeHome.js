@@ -32,7 +32,8 @@ class TreeHome extends PureComponent {
 
     const containerStyles = {
       width: '100%',
-      height: '100vh'
+      height: '100vh',
+      backgroundColor: "Lightgreen",
     }
     return (
       <div style={containerStyles} ref={tc => (this.treeContainer = tc)}>

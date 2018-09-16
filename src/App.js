@@ -39,8 +39,13 @@ class App extends Component {
   }
 
   render() {
+    const appStyle = {
+      display: "flex",
+      justifyContent: "center",
+      backgroundImage: `url(http://foothillertech.com/student/webdesign/2017/02_20/Assets/Images/Bg.gif)`,
+    }
     return (
-      <div className="App">
+      <div style={appStyle}>
         {this.state.loggedIn ? <Main /> : <LoginPage />}
       </div>
     );
