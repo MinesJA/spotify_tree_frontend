@@ -1,25 +1,14 @@
 import React, { Component } from 'react';
-import './App.css';
-import LoginPage from './containers/LoginPage'
-import Node from './Node'
-
 import SpotifyWebApi from 'spotify-web-api-js'
-import TreeHome from './TreeHome'
-import ArtistCard from './ArtistCard'
-import Search from './Search'
-
-
-
-// Source code: https://github.com/JMPerez/spotify-web-api-js/blob/master/src/spotify-web-api.js
+import TreeHome from '../components/TreeHome'
+import Search from '../components/Search'
+import Node from '../helpers/Node'
 
 const spotifyApi = new SpotifyWebApi();
 
-// const shopify_api_key = process.env.REACT_APP_SPOTIFY_API_KEY
-// const shopify_secrete_key = process.env.REACT_APP_SPOTIFY_SECRET
-
 
 class App extends Component {
-  this.state = {
+  state = {
     artistNode: {},
     tree: []
   }

@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react';
-import './App.css';
-import Node from './Node'
+import Node from '../helpers/Node'
 import Tree from 'react-d3-tree'
-import IdGenerator from './IdGenerator'
-import Adapter from './Adapter'
+import IdGenerator from '../helpers/IdGenerator'
+import Adapter from '../helpers/Adapter'
 import ArtistCard from './ArtistCard'
 
 

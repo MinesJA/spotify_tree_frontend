@@ -7,22 +7,14 @@ class Search extends Component {
       searchTerm: ""
     }
 
-
   handleChange = (e, {value}) => {
     this.setState({
       searchTerm: value
     })
   }
 
-
-
-
-
   render(){
-    const style = {
-      width: "50%",
-      margin: "0 auto"
-    }
+    const style = {width: "50%", margin: "0 auto"}
     return(
       <div style={style}>
         <Input type='text' placeholder='Search Artists...' action onChange={this.handleChange}>
