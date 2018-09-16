@@ -36,7 +36,7 @@ const LoginPage = () => {
           Spotify Recommendation Tree
           <Header.Subheader>See Spotifys Artist recommendations in a tree.</Header.Subheader>
         </Header>
-        <Button fluid color='green' href='http://localhost:8888/login' size="huge">
+        <Button fluid color='green' href='https://spotify-tree.herokuapp.com/login' size="huge">
           Log in with Spotify
         </Button>
       </Segment>
