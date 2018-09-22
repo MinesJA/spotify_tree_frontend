@@ -11,7 +11,7 @@ Utilizes Spotify's oAuth and requires that the user sign into their Spotify acco
 * [Backend Repo](https://github.com/MinesJA/spotify_tree_backend)
 
 ## Built With
-* [Node.js](https://rubyonrails.org/)
+* [Node.js](https://nodejs.org/en/)
 * [ReactJs](https://reactjs.org/)
 * [React D3 Tree](https://www.npmjs.com/package/react-d3-tree)
 
