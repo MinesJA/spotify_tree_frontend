@@ -42,7 +42,7 @@ class App extends Component {
     const appStyle = {
       display: "flex",
       justifyContent: "center",
-      // backgroundImage: `url(http://foothillertech.com/student/webdesign/2017/02_20/Assets/Images/Bg.gif)`,
+      backgroundImage: `url(http://foothillertech.com/student/webdesign/2017/02_20/Assets/Images/Bg.gif)`,
     }
     return (
       <div style={appStyle}>
