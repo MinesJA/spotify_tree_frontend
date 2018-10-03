@@ -8,6 +8,9 @@ Utilizes Spotify's oAuth and requires that the user sign into their Spotify acco
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/R_bYDokIiQs?rel=0" frameborder="0" allow="autoplay; encrypted-media"></iframe>
 
+[![IMAGE ALT TEXT HERE](http://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](https://www.youtube.com/embed/R_bYDokIiQs?rel=0)
+
+
 ## Getting Started
 
 * [Visit Site](https://thespotifytree.herokuapp.com/)
