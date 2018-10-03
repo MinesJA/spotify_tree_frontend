@@ -6,7 +6,7 @@ Utilizes Spotify's oAuth and requires that the user sign into their Spotify acco
 
 ## Video Demo
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/R_bYDokIiQs" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
 
 ## Getting Started
 
