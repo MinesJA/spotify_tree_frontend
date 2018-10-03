@@ -4,9 +4,6 @@ import LoginPage from './containers/LoginPage'
 import Main from './containers/Main'
 import SpotifyWebApi from 'spotify-web-api-js'
 
-// const shopify_api_key = process.env.REACT_APP_SPOTIFY_API_KEY
-// const shopify_secrete_key = process.env.REACT_APP_SPOTIFY_SECRET
-
 const spotifyApi = new SpotifyWebApi();
 // Source code: https://github.com/JMPerez/spotify-web-api-js/blob/master/src/spotify-web-api.js
 

@@ -112,8 +112,6 @@ class App extends Component {
     }
   }
 
-//
-
 
   render() {
     const mainStyle = {

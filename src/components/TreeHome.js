@@ -10,7 +10,6 @@ class TreeHome extends PureComponent {
   state = {}
 
   componentDidMount(){
-    console.log("Tree Mounted:", this.props.tree)
     const dimensions = this.treeContainer.getBoundingClientRect();
      this.setState({
        translate: {
@@ -25,7 +24,7 @@ class TreeHome extends PureComponent {
 
     this.setState({
       tree: [root]
-    }, ()=>{"New state:", console.log(this.state.tree)})
+    })
   }
 
   render() {
