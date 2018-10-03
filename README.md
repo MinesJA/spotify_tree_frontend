@@ -4,6 +4,10 @@ A single page web app that allows users to search for a single artist and build 
 
 Utilizes Spotify's oAuth and requires that the user sign into their Spotify account to proceed.
 
+## Video Demo
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/R_bYDokIiQs" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
 ## Getting Started
 
 * [Visit Site](https://thespotifytree.herokuapp.com/)
